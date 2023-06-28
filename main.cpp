@@ -12,8 +12,7 @@ int ListDirectoryContents(const char *sDir, char list[3000][300], int next_p){
     //Specify a file mask. *.* = We want everything!
     sprintf(sPath, "%s\\*.*", sDir);
 
-    if((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE)
-    {
+    if((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE){
         printf("Path not found: [%s]\n", sDir);
         return false;
     }
@@ -21,23 +20,19 @@ int ListDirectoryContents(const char *sDir, char list[3000][300], int next_p){
     do{
         //Find first file will always return "."
         //    and ".." as the first two directories.
-        if(strcmp(fdFile.cFileName, ".") != 0
-                && strcmp(fdFile.cFileName, "..") != 0)
-        {
-            //Build up our file path using the passed in
+        if(strcmp(fdFile.cFileName, ".") != 0 && strcmp(fdFile.cFileName, "..") != 0){
+            
+			//Build up our file path using the passed in
             //  [sDir] and the file/foldername we just found:
             sprintf(sPath, "%s\\%s", sDir, fdFile.cFileName);
 
             //Is the entity a File or Folder?
-            if(fdFile.dwFileAttributes &FILE_ATTRIBUTE_DIRECTORY)
-            {
-                //printf("Directory: %s\n", sPath);
+            if(fdFile.dwFileAttributes &FILE_ATTRIBUTE_DIRECTORY){
                 strcpy(list[x], fdFile.cFileName);
                 ++x;
                 ListDirectoryContents(sPath, list, x); //Recursion, I love it!
             }
             else{
-            	//printf("File: %s\n", sPath);
             	strcpy(list[x], fdFile.cFileName);
                 ++x;
             }
@@ -52,7 +47,6 @@ int ListDirectoryContents(const char *sDir, char list[3000][300], int next_p){
 
 
 bool endsWith(char *str, char *end){
-	
 	int e_len = strlen(end);
 	int s_len = strlen(str);
 	
@@ -153,9 +147,6 @@ int main(int argc, char** argv) {
 	
 	char command[1000];
 	sprintf(command, "convert -density 300 %s %s", pdf_name, img_base_name);
-	
-	
-	//system("convert -density 300 file.pdf image.jpg");
 	system(command);
 	list_sz = ListDirectoryContents(".", list, 0);
 	
@@ -171,14 +162,9 @@ int main(int argc, char** argv) {
 		strcpy(tmp, getAFileByExtension(list, list_sz, ".jpg", img_list_sz));
 	}
 	
-	//printf("img_list_sz >> %d\n", img_list_sz);
-	
 	if(img_list_sz == 1){
 		sprintf(command, "tesseract %s text -l por", img_name_list[0]);
 		system(command);
-		
-		//pos_proc("text.txt");
-		
 		system("start text.txt");
 	}
 	else if(img_list_sz > 1){
@@ -193,14 +179,10 @@ int main(int argc, char** argv) {
 			++x;
 		}
 		
-		//pos_proc("text.txt");
-		
 		system("copy *.txt text.txt");
 		system("start text.txt");
 	}
 	
-	//system("tesseract image.jpg text");
-	//system("start text.txt");
 	return 0;
 }
 
